@@ -1,49 +1,65 @@
-from pyrogram import Client, filters
-from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, WebAppInfo
-import json
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portals Market</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        body { font-family: sans-serif; background-color: #0f1014; color: white; text-align: center; padding: 20px; padding-bottom: 50px; }
+        .header { margin-bottom: 30px; }
+        .section-title { font-size: 18px; color: #aaa; margin: 20px 0 10px; text-align: right; }
+        .card { background: #1c1f26; border-radius: 12px; padding: 15px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; border: 1px solid #2d323e; }
+        .card:active { background: #2d323e; border-color: #00d2ff;}
+        .info { text-align: right; }
+        .price { color: #00d2ff; font-weight: bold; }
+        .wallet-box { background: #1c1f26; border-radius: 12px; padding: 15px; margin-top: 30px; border: 1px solid #ffcc00; text-align: center; }
+        .wallet-title { color: #ffcc00; font-weight: bold; margin-bottom: 10px; font-size: 14px;}
+        .wallet-address { font-size: 11px; color: #aaa; word-break: break-all; background: #0f1014; padding: 10px; border-radius: 8px;}
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h2>Portals Market</h2>
+        <p style="color: #888;">اختر البطاقة التي تريد شراءها</p>
+    </div>
 
-TOKEN = "8325442961:AAEE2sB79uBeX0EyjYfMMXIRG5k_buRDdMY"
-API_ID = 32418362  
-API_HASH = "104e301221f38fa7a15b45b03b15ecc7"
-OWNER_ID = 8613693987
-WALLET = "0x310715c0F17a38B529db662E733633a5446a9431"
+    <div class="section-title">RAZER GOLD (Rate: 81$)</div>
+    <div class="card" onclick="selectItem('RAZER GOLD', 25, 20.25)">
+        <div class="info"><div>25$ Razer Gold</div></div>
+        <div class="price">20.25 USDT</div>
+    </div>
+    <div class="card" onclick="selectItem('RAZER GOLD', 50, 40.50)">
+        <div class="info"><div>50$ Razer Gold</div></div>
+        <div class="price">40.50 USDT</div>
+    </div>
+    <div class="card" onclick="selectItem('RAZER GOLD', 100, 81.00)">
+        <div class="info"><div>100$ Razer Gold</div></div>
+        <div class="price">81.00 USDT</div>
+    </div>
 
-WEBAPP_URL = "https://fjrjfjje9-star.github.io/Xjdjdj/" 
+    <div class="section-title">ITUNES USA (Rate: 73$)</div>
+    <div class="card" onclick="selectItem('ITUNES USA', 25, 18.25)">
+        <div class="info"><div>25$ iTunes USA</div></div>
+        <div class="price">18.25 USDT</div>
+    </div>
+    <div class="card" onclick="selectItem('ITUNES USA', 100, 73.00)">
+        <div class="info"><div>100$ iTunes USA</div></div>
+        <div class="price">73.00 USDT</div>
+    </div>
 
-app = Client("web_store", api_id=API_ID, api_hash=API_HASH, bot_token=TOKEN)
+    <div class="wallet-box">
+        <div class="wallet-title">CRYPTO PAYMENT (BEP20)</div>
+        <div class="wallet-address">0x310715c0F17a38B529db662E733633a5446a9431</div>
+    </div>
 
-@app.on_message(filters.command("start"))
-async def start(c, m):
-    markup = InlineKeyboardMarkup([
-        [InlineKeyboardButton("🛒 فتح المتجر (Web App)", web_app=WebAppInfo(url=WEBAPP_URL))],
-        [InlineKeyboardButton("👨‍💻 تواصل مع الإدارة", url="https://t.me/Mohamme_riri")]
-    ])
-    await m.reply("👋 **مرحباً بك في Portals Market**\n\nاضغط على الزرار تحت عشان تفتح المتصفح وتشوف الأسعار وتطلب:", reply_markup=markup)
-
-@app.on_message(filters.service)
-async def handle_web_app_data(c, m):
-    if m.web_app_data:
-        data = json.loads(m.web_app_data.data)
-        item = data['item']
-        val = data['value']
-        price = data['price']
-        
-        text = f"🛒 **لقد اخترت طلب شراء:**\n\n"
-        text += f"💳 **البطاقة:** {item}\n"
-        text += f"💵 **الفئة:** {val}$\n"
-        text += f"💰 **المطلوب دفعه:** `{price}` USDT\n\n"
-        text += f"🏦 **عنوان المحفظة (BEP20):**\n`{WALLET}`\n\n"
-        text += "⚠️ **الخطوة الأخيرة:**\nبعد ما تحول، ابعت (صورة الإيصال) هنا في الشات عشان الإدارة تراجع طلبك وتسلمك الكود."
-        
-        await m.reply(text)
-
-@app.on_message(filters.photo & filters.private)
-async def forward_receipt(c, m):
-    await m.reply("✅ تم استلام صورة التحويل، جاري مراجعتها وتنبيه الإدارة.")
-    await c.send_message(OWNER_ID, f"🔔 **إيصال جديد من:** {m.from_user.first_name} (@{m.from_user.username})\n🆔 `{m.from_user.id}`")
-    await m.forward(OWNER_ID)
-
-if __name__ == "__main__":
-    print("✅ بوت المتجر شغال ومستعد! 🚀")
-    app.run()
-
+    <script>
+        let tg = window.Telegram.WebApp;
+        tg.expand();
+        function selectItem(name, value, price) {
+            let data = { item: name, value: value, price: price };
+            tg.sendData(JSON.stringify(data));
+        }
+    </script>
+</body>
+</html>
