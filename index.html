@@ -6,59 +6,101 @@
     <title>Portals Market</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        body { font-family: sans-serif; background-color: #0f1014; color: white; text-align: center; padding: 20px; padding-bottom: 50px; }
+        body { font-family: sans-serif; background-color: #0f1014; color: white; text-align: center; padding: 20px; }
         .header { margin-bottom: 30px; }
         .section-title { font-size: 18px; color: #aaa; margin: 20px 0 10px; text-align: right; }
         .card { background: #1c1f26; border-radius: 12px; padding: 15px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; border: 1px solid #2d323e; }
         .card:active { background: #2d323e; border-color: #00d2ff;}
         .info { text-align: right; }
         .price { color: #00d2ff; font-weight: bold; }
-        .wallet-box { background: #1c1f26; border-radius: 12px; padding: 15px; margin-top: 30px; border: 1px solid #ffcc00; text-align: center; }
-        .wallet-title { color: #ffcc00; font-weight: bold; margin-bottom: 10px; font-size: 14px;}
-        .wallet-address { font-size: 11px; color: #aaa; word-break: break-all; background: #0f1014; padding: 10px; border-radius: 8px;}
+        
+        /* تصميم صفحة الدفع الجديدة */
+        #payment-page { display: none; margin-top: 40px; }
+        .pay-btn { background: #1c1f26; color: #ffcc00; padding: 18px; border-radius: 12px; font-weight: bold; cursor: pointer; border: 1px solid #ffcc00; width: 100%; font-size: 16px; margin-bottom: 20px;}
+        .pay-btn:active { background: #ffcc00; color: #000; }
+        .address-box { display: none; background: #000; padding: 15px; border-radius: 10px; border: 1px dashed #aaa; margin-bottom: 20px; word-break: break-all; font-family: monospace; font-size: 14px; color: #00d2ff;}
+        .confirm-btn { display: none; background: #00d2ff; color: #000; padding: 15px; border-radius: 10px; font-weight: bold; cursor: pointer; border: none; width: 100%; font-size: 16px;}
+        .back-btn { background: transparent; color: #aaa; border: none; margin-top: 20px; cursor: pointer; text-decoration: underline; font-size: 14px; }
     </style>
 </head>
 <body>
-    <div class="header">
-        <h2>Portals Market</h2>
-        <p style="color: #888;">اختر البطاقة التي تريد شراءها</p>
+    <div id="products-page">
+        <div class="header">
+            <h2>Portals Market</h2>
+            <p style="color: #888;">اختر البطاقة التي تريد شراءها</p>
+        </div>
+
+        <div class="section-title">RAZER GOLD (Rate: 81$)</div>
+        <div class="card" onclick="goToPayment('RAZER GOLD', 25, 20.25)">
+            <div class="info"><div>25$ Razer Gold</div></div>
+            <div class="price">20.25 USDT</div>
+        </div>
+        <div class="card" onclick="goToPayment('RAZER GOLD', 50, 40.50)">
+            <div class="info"><div>50$ Razer Gold</div></div>
+            <div class="price">40.50 USDT</div>
+        </div>
+        <div class="card" onclick="goToPayment('RAZER GOLD', 100, 81.00)">
+            <div class="info"><div>100$ Razer Gold</div></div>
+            <div class="price">81.00 USDT</div>
+        </div>
+
+        <div class="section-title">ITUNES USA (Rate: 73$)</div>
+        <div class="card" onclick="goToPayment('ITUNES USA', 25, 18.25)">
+            <div class="info"><div>25$ iTunes USA</div></div>
+            <div class="price">18.25 USDT</div>
+        </div>
+        <div class="card" onclick="goToPayment('ITUNES USA', 100, 73.00)">
+            <div class="info"><div>100$ iTunes USA</div></div>
+            <div class="price">73.00 USDT</div>
+        </div>
     </div>
 
-    <div class="section-title">RAZER GOLD (Rate: 81$)</div>
-    <div class="card" onclick="selectItem('RAZER GOLD', 25, 20.25)">
-        <div class="info"><div>25$ Razer Gold</div></div>
-        <div class="price">20.25 USDT</div>
-    </div>
-    <div class="card" onclick="selectItem('RAZER GOLD', 50, 40.50)">
-        <div class="info"><div>50$ Razer Gold</div></div>
-        <div class="price">40.50 USDT</div>
-    </div>
-    <div class="card" onclick="selectItem('RAZER GOLD', 100, 81.00)">
-        <div class="info"><div>100$ Razer Gold</div></div>
-        <div class="price">81.00 USDT</div>
-    </div>
-
-    <div class="section-title">ITUNES USA (Rate: 73$)</div>
-    <div class="card" onclick="selectItem('ITUNES USA', 25, 18.25)">
-        <div class="info"><div>25$ iTunes USA</div></div>
-        <div class="price">18.25 USDT</div>
-    </div>
-    <div class="card" onclick="selectItem('ITUNES USA', 100, 73.00)">
-        <div class="info"><div>100$ iTunes USA</div></div>
-        <div class="price">73.00 USDT</div>
-    </div>
-
-    <div class="wallet-box">
-        <div class="wallet-title">CRYPTO PAYMENT (BEP20)</div>
-        <div class="wallet-address">0x310715c0F17a38B529db662E733633a5446a9431</div>
+    <div id="payment-page">
+        <h2 style="color: #fff; margin-bottom: 10px;">طريقة الدفع</h2>
+        <p style="color: #888; margin-bottom: 30px;">اختر طريقة الدفع لإتمام الطلب</p>
+        
+        <button class="pay-btn" onclick="showAddress()">CRYPTO PAYMENT (BEP20)</button>
+        
+        <div id="address-box" class="address-box">
+            <span style="color: #fff; display: block; margin-bottom: 10px;">قم بالتحويل إلى هذا العنوان:</span>
+            0x310715c0F17a38B529db662E733633a5446a9431
+        </div>
+        
+        <button id="confirm-btn" class="confirm-btn" onclick="sendOrder()">✅ تأكيد وإرسال الطلب</button>
+        <br>
+        <button class="back-btn" onclick="goBack()">رجوع للمنتجات</button>
     </div>
 
     <script>
         let tg = window.Telegram.WebApp;
         tg.expand();
-        function selectItem(name, value, price) {
-            let data = { item: name, value: value, price: price };
-            tg.sendData(JSON.stringify(data));
+        
+        let currentOrder = null;
+
+        // الانتقال لصفحة الدفع
+        function goToPayment(name, value, price) {
+            currentOrder = { item: name, value: value, price: price };
+            document.getElementById('products-page').style.display = 'none';
+            document.getElementById('payment-page').style.display = 'block';
+        }
+
+        // إظهار عنوان المحفظة
+        function showAddress() {
+            document.getElementById('address-box').style.display = 'block';
+            document.getElementById('confirm-btn').style.display = 'block';
+        }
+
+        // الرجوع للمنتجات
+        function goBack() {
+            document.getElementById('payment-page').style.display = 'none';
+            document.getElementById('products-page').style.display = 'block';
+            document.getElementById('address-box').style.display = 'none';
+            document.getElementById('confirm-btn').style.display = 'none';
+        }
+
+        // إرسال الطلب للبوت
+        function sendOrder() {
+            tg.sendData(JSON.stringify(currentOrder));
         }
     </script>
 </body>
